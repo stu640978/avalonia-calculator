@@ -57,17 +57,31 @@ public partial class MainWindowViewModel : ViewModelBase
         else
         {
             // 如果已經有.，則不可再添加
-            if (Display.IndexOf('.') != -1 && number == ".")
+            if (Operation == string.Empty)
             {
-                return;
+                if (Display.Contains('.') && number == ".")
+                {
+                    return;
+                }
+            }
+            else
+            {
+                if (SecondOperand.ToString(CultureInfo.InvariantCulture).Contains('.') && number == ".")
+                {
+                    return;
+                }
             }
             
             Display += number;
             if (Operation != string.Empty)
             {
                 var operationIndex = Display.IndexOf(Operation, StringComparison.Ordinal);
-                SecondOperand = double.Parse(Display.Substring(operationIndex + Operation.Length));
+                if (Display.Substring(operationIndex + Operation.Length) == ".")
+                {
+                    return;
+                }
                 
+                SecondOperand = double.Parse(Display.Substring(operationIndex + Operation.Length));
                 Result = Calculate(operationIndex).ToString(CultureInfo.InvariantCulture);
             }
         }
