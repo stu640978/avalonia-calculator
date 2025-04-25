@@ -56,6 +56,12 @@ public partial class MainWindowViewModel : ViewModelBase
         }
         else
         {
+            // 如果已經有.，則不可再添加
+            if (Display.IndexOf('.') != -1 && number == ".")
+            {
+                return;
+            }
+            
             Display += number;
             if (Operation != string.Empty)
             {
@@ -113,6 +119,11 @@ public partial class MainWindowViewModel : ViewModelBase
         var operationIndex = Display.IndexOf(Operation, StringComparison.Ordinal);
         var result = Calculate(operationIndex);
 
+        if (double.IsNaN(result))
+        {
+            return;
+        }
+        
         Display = result.ToString(CultureInfo.InvariantCulture);
         Result = string.Empty;
         Operation = string.Empty;
@@ -125,15 +136,29 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         SecondOperand = double.Parse(Display.Substring(operationIndex + Operation.Length));
 
-        return Operation switch
+        switch (Operation)
         {
-            "+" => FirstOperand + SecondOperand,
-            "-" => FirstOperand - SecondOperand,
-            "*" => FirstOperand * SecondOperand,
-            "/" => FirstOperand / SecondOperand,
-            "%" => FirstOperand % SecondOperand,
-            _ => 0
-        };
+            case "+":
+                return FirstOperand + SecondOperand;
+            case "-":
+                return FirstOperand - SecondOperand;
+            case "*":
+                return FirstOperand * SecondOperand;
+            case "/":
+                if (SecondOperand == 0)
+                {
+                    return double.NaN; // 除以零的情況
+                }
+                return FirstOperand / SecondOperand;
+            case "%":
+                if (SecondOperand == 0)
+                {
+                    return double.NaN; // 除以零的情況
+                }
+                return FirstOperand % SecondOperand;
+            default:
+                return 0;
+        }
     }
 
     /**
