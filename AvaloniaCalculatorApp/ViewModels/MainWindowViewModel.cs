@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Globalization;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -72,7 +74,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             // 如果有運算符號，則先計算結果
             var result = Calculate(operationIndex);
-            Display = result.ToString();
+            Display = result.ToString(CultureInfo.InvariantCulture);
         }
 
         FirstOperand = double.Parse(Display);
@@ -103,10 +105,10 @@ public partial class MainWindowViewModel : ViewModelBase
         }
         
         // check second operand after operation by cutting the display string
-        var operationIndex = Display.IndexOf(Operation);
+        var operationIndex = Display.IndexOf(Operation, StringComparison.Ordinal);
         var result = Calculate(operationIndex);
 
-        Result = result.ToString();
+        Result = result.ToString(CultureInfo.InvariantCulture);
         Operation = string.Empty;
     }
 
