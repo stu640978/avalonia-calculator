@@ -66,6 +66,15 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void OnOperationButtonClick(string operation)
     {
+        // 檢查是否有運算符號且並不在最後一個字元
+        var operationIndex = Display.IndexOfAny(['+', '-', '*', '/', '%']);
+        if (operationIndex != -1 && operationIndex != Display.Length - 1)
+        {
+            // 如果有運算符號，則先計算結果
+            var result = Calculate(operationIndex);
+            Display = result.ToString();
+        }
+
         FirstOperand = double.Parse(Display);
         Operation = operation;
         
@@ -95,9 +104,20 @@ public partial class MainWindowViewModel : ViewModelBase
         
         // check second operand after operation by cutting the display string
         var operationIndex = Display.IndexOf(Operation);
+        var result = Calculate(operationIndex);
+
+        Result = result.ToString();
+        Operation = string.Empty;
+    }
+
+    /**
+     * <summary>計算結果</summary>
+     */
+    private double Calculate(int operationIndex)
+    {
         SecondOperand = double.Parse(Display.Substring(operationIndex + Operation.Length));
 
-        var result = Operation switch
+        return Operation switch
         {
             "+" => FirstOperand + SecondOperand,
             "-" => FirstOperand - SecondOperand,
@@ -106,9 +126,6 @@ public partial class MainWindowViewModel : ViewModelBase
             "%" => FirstOperand % SecondOperand,
             _ => 0
         };
-
-        Result = result.ToString();
-        Operation = string.Empty;
     }
 
     /**
