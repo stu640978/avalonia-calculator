@@ -12,6 +12,10 @@
         <Folder Include="Models\"/>
         <AvaloniaResource Include="Assets\**"/>
     </ItemGroup>
+    
+    <ItemGroup>
+        <TrimmerRootDescriptor Include="TrimmerRoots.xml" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="11.2.8" />

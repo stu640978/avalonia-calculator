@@ -43,8 +43,6 @@ public partial class MainWindowViewModel : ViewModelBase
      * <summary>顯示結果</summary>
      */
     public bool CanShowResult => !string.IsNullOrEmpty(Result);
-    
-    
 
     /**
      * <summary>數字按鈕點擊事件</summary>
@@ -59,6 +57,13 @@ public partial class MainWindowViewModel : ViewModelBase
         else
         {
             Display += number;
+            if (Operation != string.Empty)
+            {
+                var operationIndex = Display.IndexOf(Operation, StringComparison.Ordinal);
+                SecondOperand = double.Parse(Display.Substring(operationIndex + Operation.Length));
+                
+                Result = Calculate(operationIndex).ToString(CultureInfo.InvariantCulture);
+            }
         }
     }
 
@@ -108,7 +113,8 @@ public partial class MainWindowViewModel : ViewModelBase
         var operationIndex = Display.IndexOf(Operation, StringComparison.Ordinal);
         var result = Calculate(operationIndex);
 
-        Result = result.ToString(CultureInfo.InvariantCulture);
+        Display = result.ToString(CultureInfo.InvariantCulture);
+        Result = string.Empty;
         Operation = string.Empty;
     }
 
@@ -152,6 +158,20 @@ public partial class MainWindowViewModel : ViewModelBase
         if (Display.Length > 1)
         {
             Display = Display.Substring(0, Display.Length - 1);
+            if (Display.Last() is '+' or '-' or '*' or '/' or '%')
+            {
+                SecondOperand = 0;
+                Result = string.Empty;
+            }
+            else
+            {
+                var operationIndex = Display.IndexOf(Operation, StringComparison.Ordinal);
+                if (operationIndex != -1)
+                {
+                    SecondOperand = double.Parse(Display.Substring(operationIndex + Operation.Length));
+                    Result = Calculate(operationIndex).ToString(CultureInfo.InvariantCulture);
+                }
+            }
         }
         else
         {

@@ -1,0 +1,5 @@
+﻿<linker>
+    <assembly fullname="AvaloniaCalculatorApp">
+        <type fullname="AvaloniaCalculatorApp.Views.*" preserve="all" />
+    </assembly>
+</linker>
