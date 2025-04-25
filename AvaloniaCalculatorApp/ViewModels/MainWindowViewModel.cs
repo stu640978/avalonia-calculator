@@ -93,16 +93,26 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void OnOperationButtonClick(string operation)
     {
-        // 檢查是否有運算符號且並不在最後一個字元
+        // 如果有運算符號
         var operationIndex = Display.IndexOfAny(['+', '-', '*', '/', '%']);
-        if (operationIndex != -1 && operationIndex != Display.Length - 1)
+        if (operationIndex != -1)
         {
-            // 如果有運算符號，則先計算結果
-            var result = Calculate(operationIndex);
-            Display = result.ToString(CultureInfo.InvariantCulture);
+            // 檢查是否有運算符號且並不在最後一個字元，先計算結果
+            if (operationIndex != Display.Length - 1)
+            {
+                var result = Calculate(operationIndex);
+                Display = result.ToString(CultureInfo.InvariantCulture);
+                FirstOperand = result;
+            }
+            else
+            {
+                FirstOperand = double.Parse(Display.Substring(0, operationIndex));
+            }
         }
-
-        FirstOperand = double.Parse(Display);
+        else
+        {
+            FirstOperand = double.Parse(Display);
+        }
         Operation = operation;
         
         // 確認當前是否已經有運算符號，如果有則替換
